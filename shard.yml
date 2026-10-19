@@ -1,0 +1,6 @@
+name: icon-radix
+version: 0.1.0
+
+dependencies:
+  crimage:
+    github: naqvis/crimage
