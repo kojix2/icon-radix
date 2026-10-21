@@ -101,7 +101,7 @@ def generate(archive, output, check=False, allow_different_source=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("archive", type=Path)
-    parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "src/icon/radix.cr")
+    parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "src/radix.cr")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--allow-different-source", action="store_true")
     args = parser.parse_args()

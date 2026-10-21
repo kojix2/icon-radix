@@ -1,5 +1,5 @@
 require "spec"
-require "../src/icon/radix"
+require "../src/radix"
 
 describe Icon::Radix do
   it "provides standard icons" do
