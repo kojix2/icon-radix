@@ -2,8 +2,14 @@
 
 [Radix Icons](https://github.com/radix-ui/icons) as 332 pre-rendered, 15×15 `CrImage` constants for Crystal.
 
+```yaml
+dependencies:
+  icon-radix:
+    github: kojix2/icon-radix
+```
+
 ```crystal
-require "icon/radix"
+require "icon-radix"
 
 gear = Icon::Radix::Gear
 ```
@@ -19,4 +25,4 @@ python3 scripts/generate.py /path/to/icons-main.zip
 python3 scripts/generate.py /path/to/icons-main.zip --check
 ```
 
-MIT licensed. See [LICENSE](LICENSE).
+This shard is MIT licensed under [LICENSE](LICENSE). The bundled Radix icons retain the upstream [LICENSE.radix](LICENSE.radix).
