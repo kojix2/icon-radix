@@ -74,13 +74,15 @@ def generate(archive, output, check=False):
             png = rasterize(source.read(path), name)
             rows.append(f"{identifier}\t{base64.b64encode(png).decode()}\n")
     result = ''.join(rows)
+    groups = output.parent / "groups.txt"
     if check:
-        if output.read_text() != result:
+        if output.read_text() != result or groups.read_text() != "icons\n":
             raise ValueError("Generated data is out of date")
         print(f"OK: {len(icons)} icons, data file matches")
     else:
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(result)
+        groups.write_text("icons\n")
         print(f"Generated {len(icons)} icons: {output}")
 
 
