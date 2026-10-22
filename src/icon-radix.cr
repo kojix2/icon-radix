@@ -1,6 +1,4 @@
 # Generated from radix-ui/icons (MIT). Do not edit manually.
-# Upstream commit: 112af91ad275a63c3a29b0da2588342af74ef9bf
-# Source archive SHA-256: 6d4567f85dcb3bf6a773fae1c6d42a4ad5a75b59f8ddac0936205c30c28f1000
 require "base64"
 require "crimage"
 

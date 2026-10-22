@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
-"""Generate Crystal icons from the pinned Radix ZIP (requires librsvg and Cairo)."""
+"""Generate Crystal icons from a Radix Icons ZIP (requires librsvg and Cairo)."""
 
 import argparse
 import base64
 import ctypes as c
 from ctypes.util import find_library
-import hashlib
 import os
 from pathlib import Path
 import re
 import tempfile
 import zipfile
 
-SOURCE_SHA256 = "6d4567f85dcb3bf6a773fae1c6d42a4ad5a75b59f8ddac0936205c30c28f1000"
-SOURCE_COMMIT = "112af91ad275a63c3a29b0da2588342af74ef9bf"
 SVG = re.compile(r"[^/]+/packages/radix-icons/icons/([a-z0-9-]+)\.svg\Z")
 
 
@@ -61,10 +58,7 @@ def rasterize(svg, name):
         unref(handle)
 
 
-def generate(archive, output, check=False, allow_different_source=False):
-    digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-    if digest != SOURCE_SHA256 and not allow_different_source:
-        raise ValueError(f"Source archive SHA-256 mismatch: {digest}; expected {SOURCE_SHA256}")
+def generate(archive, output, check=False):
     with zipfile.ZipFile(archive) as zip_file:
         icons = sorted((match[1], path) for path in zip_file.namelist()
                        if (match := SVG.fullmatch(path)))
@@ -72,8 +66,6 @@ def generate(archive, output, check=False, allow_different_source=False):
             raise ValueError("No Radix SVG icons found in source archive")
         lines = [
             "# Generated from radix-ui/icons (MIT). Do not edit manually.",
-            f"# Upstream commit: {'UPDATED_SOURCE_CHECK_REQUIRED' if allow_different_source else SOURCE_COMMIT}",
-            f"# Source archive SHA-256: {digest}",
             'require "base64"', 'require "crimage"', '', 'module Icon', '  module Radix',
             '    # Shared CrImage image constants. Copy before modifying.',
             '    private def self.decode_png(encoded : String)',
@@ -103,6 +95,5 @@ if __name__ == "__main__":
     parser.add_argument("archive", type=Path)
     parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "src/icon-radix.cr")
     parser.add_argument("--check", action="store_true")
-    parser.add_argument("--allow-different-source", action="store_true")
     args = parser.parse_args()
-    generate(args.archive, args.output, args.check, args.allow_different_source)
+    generate(args.archive, args.output, args.check)

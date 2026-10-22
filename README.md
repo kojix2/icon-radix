@@ -11,18 +11,18 @@ dependencies:
 ```crystal
 require "icon-radix"
 
-gear = Icon::Radix::Gear
+icon = Icon::Radix::Gear
 ```
 
-Constants are shared, mutable images. Copy an icon before editing it.
+Constants are shared, mutable images; copy before editing.
 
 ## Regenerate
 
-Maintainers need Python 3, librsvg, Cairo, and the source ZIP pinned in [generate.py](scripts/generate.py).
+Requires Python 3, librsvg, Cairo, and a ZIP of the upstream repository.
 
 ```bash
 python3 scripts/generate.py /path/to/icons-main.zip
 python3 scripts/generate.py /path/to/icons-main.zip --check
 ```
 
-This shard is MIT licensed under [LICENSE](LICENSE). The bundled Radix icons retain the upstream [LICENSE.radix](LICENSE.radix).
+MIT: [shard](LICENSE), [upstream icons](LICENSE.radix).
