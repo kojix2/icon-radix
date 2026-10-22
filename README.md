@@ -14,7 +14,7 @@ require "icon-radix"
 icon = Icon::Radix::Gear
 ```
 
-Constants are shared, mutable images; copy before editing.
+Constants are shared, mutable images; copy before editing. PNG data lives in `src/data/icons.tsv` and is loaded by a Crystal macro.
 
 ## Regenerate
 

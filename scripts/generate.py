@@ -59,33 +59,27 @@ def rasterize(svg, name):
 
 
 def generate(archive, output, check=False):
-    with zipfile.ZipFile(archive) as zip_file:
-        icons = sorted((match[1], path) for path in zip_file.namelist()
+    with zipfile.ZipFile(archive) as source:
+        icons = sorted((match[1], path) for path in source.namelist()
                        if (match := SVG.fullmatch(path)))
         if not icons:
             raise ValueError("No Radix SVG icons found in source archive")
-        lines = [
-            "# Generated from radix-ui/icons (MIT). Do not edit manually.",
-            'require "base64"', 'require "crimage"', '', 'module Icon', '  module Radix',
-            '    # Shared CrImage image constants. Copy before modifying.',
-            '    private def self.decode_png(encoded : String)',
-            '      CrImage.read(IO::Memory.new(Base64.decode(encoded)))', '    end', '',
-        ]
-        identifiers = set()
+        rows = []
+        names = set()
         for name, path in icons:
             identifier = ''.join(part.capitalize() for part in name.split('-'))
-            if identifier in identifiers:
+            if identifier in names:
                 raise ValueError(f"Conflicting Crystal identifier: {identifier}")
-            identifiers.add(identifier)
-            png = rasterize(zip_file.read(path), name)
-            lines += [f"    # {name} (15x15)",
-                      f'    {identifier} = decode_png("{base64.b64encode(png).decode()}")']
-    result = '\n'.join(lines + ['  end', 'end', ''])
+            names.add(identifier)
+            png = rasterize(source.read(path), name)
+            rows.append(f"{identifier}\t{base64.b64encode(png).decode()}\n")
+    result = ''.join(rows)
     if check:
         if output.read_text() != result:
-            raise ValueError("Generated file is out of date")
-        print(f"OK: {len(icons)} icons, generated file matches")
+            raise ValueError("Generated data is out of date")
+        print(f"OK: {len(icons)} icons, data file matches")
     else:
+        output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(result)
         print(f"Generated {len(icons)} icons: {output}")
 
@@ -93,7 +87,7 @@ def generate(archive, output, check=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("archive", type=Path)
-    parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "src/icon-radix.cr")
+    parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "src/data/icons.tsv")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     generate(args.archive, args.output, args.check)
